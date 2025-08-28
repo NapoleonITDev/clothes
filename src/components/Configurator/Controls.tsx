@@ -10,10 +10,10 @@ interface ControlsProps {
   onConfigChange: (updates: Partial<LapelConfig>) => void;
 }
 
-const Controls: React.FC<ControlsProps> = ({ 
-  language, 
-  config, 
-  onConfigChange 
+const Controls: React.FC<ControlsProps> = ({
+  language,
+  config,
+  onConfigChange
 }) => {
   const handleModelChange = (model: LapelModel) => {
     onConfigChange({ model });
@@ -37,79 +37,82 @@ const Controls: React.FC<ControlsProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Пол */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Пол
+      {/* Gender Selection */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-2 h-2 bg-accent-500 rounded-full mr-3"></span>
+          {language === 'ru' ? 'Пол' : 'Gender'}
         </h3>
         <div className="flex gap-3">
-          <button
-            onClick={() => handleGenderChange('male')}
-            className={`px-4 py-2 rounded-lg border-2 transition-colors duration-200 ${
-              config.gender === 'male'
-                ? 'border-accent-600 bg-accent-50 text-accent-700'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-accent-300'
-            }`}
-          >
-            {t('configurator.gender.male', language)}
-          </button>
-          <button
-            onClick={() => handleGenderChange('female')}
-            className={`px-4 py-2 rounded-lg border-2 transition-colors duration-200 ${
-              config.gender === 'female'
-                ? 'border-accent-600 bg-accent-50 text-accent-700'
-                : 'border-gray-300 bg-white text-gray-700 hover:border-accent-300'
-            }`}
-          >
-            {t('configurator.gender.female', language)}
-          </button>
-        </div>
-      </div>
-
-      {/* Модель лацкана */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          {t('configurator.model.title', language)}
-        </h3>
-        <div className="grid grid-cols-3 gap-3">
-          {(['notch', 'peak', 'shawl'] as LapelModel[]).map((model) => (
+          {[
+            { value: 'male', label: language === 'ru' ? 'Мужской' : 'Male', icon: '👔' },
+            { value: 'female', label: language === 'ru' ? 'Женский' : 'Female', icon: '👗' }
+          ].map((option) => (
             <button
-              key={model}
-              onClick={() => handleModelChange(model)}
-              className={`px-4 py-3 rounded-lg border-2 transition-colors duration-200 ${
-                config.model === model
-                  ? 'border-accent-600 bg-accent-50 text-accent-700'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-accent-300'
+              key={option.value}
+              onClick={() => handleGenderChange(option.value as 'male' | 'female')}
+              className={`flex-1 px-6 py-4 rounded-xl border-2 transition-all duration-300 text-center group ${
+                config.gender === option.value
+                  ? 'border-accent-600 bg-accent-50 text-accent-700 shadow-lg'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-accent-300 hover:bg-accent-50/30'
               }`}
             >
-              <div className="text-sm font-medium">
-                {t(`configurator.model.${model}`, language)}
-              </div>
+              <div className="text-2xl mb-2">{option.icon}</div>
+              <div className="font-medium">{option.label}</div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Паттерн */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      {/* Lapel Model */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-2 h-2 bg-primary-500 rounded-full mr-3"></span>
+          {t('configurator.model.title', language)}
+        </h3>
+        <div className="grid grid-cols-3 gap-3">
+          {([
+            { model: 'notch', label: t('configurator.model.notch', language), icon: '📐' },
+            { model: 'peak', label: t('configurator.model.peak', language), icon: '🔺' },
+            { model: 'shawl', label: t('configurator.model.shawl', language), icon: '🌊' }
+          ] as const).map((option) => (
+            <button
+              key={option.model}
+              onClick={() => handleModelChange(option.model)}
+              className={`p-4 rounded-xl border-2 transition-all duration-300 text-center group ${
+                config.model === option.model
+                  ? 'border-primary-600 bg-primary-50 text-primary-700 shadow-lg scale-105'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-primary-300 hover:bg-primary-50/30 hover:scale-102'
+              }`}
+            >
+              <div className="text-2xl mb-2">{option.icon}</div>
+              <div className="text-sm font-medium">{option.label}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Pattern Selection */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
           {t('configurator.pattern.title', language)}
         </h3>
-        <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
+        <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto custom-scrollbar">
           {PATTERNS.map((pattern) => (
             <button
               key={pattern.id}
               onClick={() => handlePatternChange(pattern.id)}
-              className={`p-3 rounded-lg border-2 transition-colors duration-200 text-left ${
+              className={`p-4 rounded-xl border-2 transition-all duration-300 text-left group ${
                 config.pattern === pattern.id
-                  ? 'border-accent-600 bg-accent-50'
-                  : 'border-gray-300 bg-white hover:border-accent-300'
+                  ? 'border-green-600 bg-green-50 text-green-700 shadow-lg scale-105'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-green-300 hover:bg-green-50/30 hover:scale-102'
               }`}
             >
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-gray-900 mb-1">
                 {language === 'ru' ? pattern.name : pattern.nameEn}
               </div>
-              <div className="text-xs text-gray-500 mt-1">
+              <div className="text-xs text-gray-500">
                 {language === 'ru' ? pattern.tags[0] : pattern.tagsEn[0]}
               </div>
             </button>
@@ -117,9 +120,10 @@ const Controls: React.FC<ControlsProps> = ({
         </div>
       </div>
 
-      {/* Цвет канта */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      {/* Trim Color */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
           {t('configurator.trim.title', language)}
         </h3>
         <div className="grid grid-cols-3 gap-3">
@@ -127,27 +131,33 @@ const Controls: React.FC<ControlsProps> = ({
             <button
               key={color}
               onClick={() => handleTrimColorChange(color)}
-              className={`relative p-4 rounded-lg border-2 transition-colors duration-200 ${
+              className={`relative p-4 rounded-xl border-2 transition-all duration-300 group ${
                 config.trimColor === color
-                  ? 'border-accent-600 ring-2 ring-accent-200'
-                  : 'border-gray-300 hover:border-accent-300'
+                  ? 'border-purple-600 ring-2 ring-purple-200 shadow-lg scale-105'
+                  : 'border-gray-200 hover:border-purple-300 hover:scale-102'
               }`}
             >
-              <div 
-                className="w-full h-8 rounded border border-gray-300"
+              <div
+                className="w-full h-8 rounded-lg border border-gray-300 mb-2"
                 style={{ backgroundColor: getTrimColorHex(color) }}
               />
-              <div className="text-xs text-gray-700 mt-2 capitalize">
+              <div className="text-xs text-gray-700 capitalize font-medium">
                 {color}
               </div>
+              {config.trimColor === color && (
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+              )}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Цвет нитки */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      {/* Stitch Color */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
           {t('configurator.stitch.title', language)}
         </h3>
         <div className="grid grid-cols-3 gap-3">
@@ -155,19 +165,24 @@ const Controls: React.FC<ControlsProps> = ({
             <button
               key={color}
               onClick={() => handleStitchColorChange(color)}
-              className={`relative p-4 rounded-lg border-2 transition-colors duration-200 ${
+              className={`relative p-4 rounded-xl border-2 transition-all duration-300 group ${
                 config.stitchColor === color
-                  ? 'border-accent-600 ring-2 ring-accent-200'
-                  : 'border-gray-300 hover:border-accent-300'
+                  ? 'border-orange-600 ring-2 ring-orange-200 shadow-lg scale-105'
+                  : 'border-gray-200 hover:border-orange-300 hover:scale-102'
               }`}
             >
-              <div 
-                className="w-full h-8 rounded border border-gray-300"
+              <div
+                className="w-full h-8 rounded-lg border border-gray-300 mb-2"
                 style={{ backgroundColor: getStitchColorHex(color) }}
               />
-              <div className="text-xs text-gray-700 mt-2 capitalize">
+              <div className="text-xs text-gray-700 capitalize font-medium">
                 {color}
               </div>
+              {config.stitchColor === color && (
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+              )}
             </button>
           ))}
         </div>

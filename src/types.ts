@@ -25,17 +25,19 @@ export type LapelConfig = {
   gender: 'male' | 'female';
 };
 
-export type ProductVariant = {
+export interface ProductVariant {
   id: string;
   name: string;
   nameEn: string;
   description: string;
   descriptionEn: string;
   price: number;
+  originalPrice?: number;
+  discount?: number;
   features: string[];
   featuresEn: string[];
   popular?: boolean;
-};
+}
 
 export type Review = {
   id: string;
